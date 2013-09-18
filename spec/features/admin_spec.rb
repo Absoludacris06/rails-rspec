@@ -3,6 +3,7 @@ require 'spec_helper'
 feature 'Admin panel' do
   context "on admin homepage" do
     it "can see a list of recent posts" do
+      new_post = Post.create(title: "Test Title", content: "I'm a dumb post.")
       visit '/admin/posts'
       page.should include{ 
         Post.all.each do |post|
@@ -45,17 +46,34 @@ feature 'Admin panel' do
 
   context "editing post" do
     it "can mark an existing post as unpublished" do
-      pending # remove this line when you're working on implementing this test
-
+      new_post = Post.create(title: "Test Title", content: "I'm a dumb post.", is_published: true)
+      visit "/admin/posts"
+      click_link "Edit"
+      page.uncheck('post_is_published')
+      click_button "Save"
       page.should have_content "Published: false"
     end
   end
 
   context "on post show page" do
-    it "can visit a post show page by clicking the title"
+    it "can visit a post show page by clicking the title" do
+      new_post = Post.create(title: "Test Title", content: "I'm a dumb post.", is_published: true)
+      visit "/admin/posts"
+      click_link "#{new_post.title}"
+      expect(page.current_path).to eq(admin_post_path(new_post))
+    end
 
-    it "can see an edit link that takes you to the edit post path"
+    it "can see an edit link that takes you to the edit post path" do
+      new_post = Post.create(title: "Test Title", content: "I'm a dumb post.", is_published: true)
+      visit admin_post_url(new_post)
+      page.should have_link "Edit post"
+    end
 
-    it "can go to the admin homepage by clicking the Admin welcome page link"
+    it "can go to the admin homepage by clicking the Admin welcome page link" do
+      new_post = Post.create(title: "Test Title", content: "I'm a dumb post.", is_published: true)
+      visit admin_post_url(new_post)
+      click_link "Admin welcome page"
+      expect(page.current_path).to eq("/admin/posts")
+    end
   end
 end
