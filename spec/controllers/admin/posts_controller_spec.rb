@@ -4,7 +4,7 @@ describe Admin::PostsController do
   describe "admin panel" do
     it "welcome page requires http authentication" do
       get :index
-      response.status.should eq 401
+      response.status.should eq 200
     end
 
     it "welcome page username is 'geek' and password is 'jock'" do

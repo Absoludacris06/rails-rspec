@@ -1,4 +1,5 @@
 class Admin::PostsController < ApplicationController
+
   def index
     @posts = Post.all
   end
@@ -37,7 +38,9 @@ class Admin::PostsController < ApplicationController
   end
 
   def destroy
-    post = Post.find(params[:destroy])
+    puts "*" * 80
+    puts "nailed it"
+    post = Post.find(params[:id])
     post.destroy
 
     redirect_to admin_posts_url

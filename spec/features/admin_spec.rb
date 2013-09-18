@@ -2,11 +2,31 @@ require 'spec_helper'
 
 feature 'Admin panel' do
   context "on admin homepage" do
-    it "can see a list of recent posts"
+    it "can see a list of recent posts" do
+      visit '/admin/posts'
+      page.should include{ 
+        Post.all.each do |post|
+          post.title
+        end}
+    end
 
-    it "can edit a post by clicking the edit link next to a post"
+    it "can edit a post by clicking the edit link next to a post" do
+      new_post = Post.create(title: "Test Title", content: "I'm a dumb post.")
+      visit "/admin/posts"
+      click_link "Edit"
 
-    it "can delete a post by clicking the delete link next to a post"
+      page.should have_content "Edit #{new_post.title}"
+      page.should have_selector('input[type=submit][value="Save"]')
+    end
+
+    it "can delete a post by clicking the delete link next to a post" do
+      new_post = Post.create(title: "Test Title", content: "I'm a dumb post.")
+      visit "/admin/posts"
+      expect {
+        click_link "Delete"
+        }.to change(Post, :count).by(-1)
+
+    end
 
     it "can create a new post and view it" do
        visit new_admin_post_url
